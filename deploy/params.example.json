@@ -1,18 +1,15 @@
-
----
-
 # 3) deploy/params.example.json
 
 ```json
 {
-  "subscriptionId": "<SUB-ID>",
-  "resourceGroup": "<RG-NAME>",
-  "location": "uksouth",
-  "workspaceName": "<LOG-ANALYTICS-NAME>",
-  "workspaceResourceId": "/subscriptions/<SUB-ID>/resourceGroups/<RG-NAME>/providers/Microsoft.OperationalInsights/workspaces/<LOG-ANALYTICS-NAME>",
-  "vmResourceId": "/subscriptions/<SUB-ID>/resourceGroups/<RG-NAME>/providers/Microsoft.Compute/virtualMachines/<VM-NAME>",
-  "logicAppName": "pbk-vm-shutdown",
-  "safetyTagName": "AutoShutdown",
-  "safetyTagValue": "true",
-  "miRoleScope": "/subscriptions/<SUB-ID>/resourceGroups/<RG-NAME>"
+    "subscriptionId": "<SUB-ID>",
+    "resourceGroup": "<RG-NAME>",
+    "location": "uksouth",
+    "workspaceName": "<LOG-ANALYTICS-NAME>",
+    "workspaceResourceId": "/subscriptions/<SUB-ID>/resourceGroups/<RG-NAME>/providers/Microsoft.OperationalInsights/workspaces/<LOG-ANALYTICS-NAME>",
+    "vmResourceId": "/subscriptions/<SUB-ID>/resourceGroups/<RG-NAME>/providers/Microsoft.Compute/virtualMachines/<VM-NAME>",
+    "logicAppName": "pbk-vm-shutdown",
+    "safetyTagName": "AutoShutdown",
+    "safetyTagValue": "true",
+    "miRoleScope": "/subscriptions/<SUB-ID>/resourceGroups/<RG-NAME>"
 }
