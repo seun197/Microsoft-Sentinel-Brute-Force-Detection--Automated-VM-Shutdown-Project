@@ -1,1 +1,64 @@
-
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/bd67978c-28b7-4fcc-ac93-7dd89a820d1e')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/bd67978c-28b7-4fcc-ac93-7dd89a820d1e')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2023-12-01-preview",
+            "properties": {
+                "displayName": "Brute Force Attack",
+                "description": "This alert triggers when there are repeated failed sign-in attempts to an account in a short space of time.\nIn most cases, this pattern means someone is trying to guess the password — either manually or using an automated tool.\nIf successful, the attacker could get full access to the account and its data.\nCatching this early helps us block the source, reset the password, and stop the account from being taken over.",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "SecurityEvent\r\n| where TimeGenerated > ago(5m)\r\n| where EventID == 4625\r\n| summarize FailedAttempts = count() by TargetUserName, Computer, bin(TimeGenerated, 5m)\r\n| where FailedAttempts >= 3\r\n",
+                "queryFrequency": "PT5M",
+                "queryPeriod": "PT5M",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "startTimeUtc": null,
+                "tactics": [
+                    "CredentialAccess"
+                ],
+                "techniques": [
+                    "T1110"
+                ],
+                "subTechniques": [
+                    "T1110.004"
+                ],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": true,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5M",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": {
+                    "alertDynamicProperties": []
+                },
+                "customDetails": {},
+                "entityMappings": null,
+                "sentinelEntitiesMappings": null,
+                "templateVersion": null
+            }
+        }
+    ]
+}
