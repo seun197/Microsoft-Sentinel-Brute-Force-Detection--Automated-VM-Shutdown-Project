@@ -1,1 +1,146 @@
-
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_PBK_BruteForce_Notify_name": {
+            "defaultValue": "PBK_BruteForce_Notify",
+            "type": "String"
+        },
+        "connections_azuresentinel_PBK_BruteForce_Notify_externalid": {
+            "defaultValue": "/subscriptions/4d3416c3-2677-453b-98da-b14884c01495/resourceGroups/NewTuesday/providers/Microsoft.Web/connections/azuresentinel-PBK_BruteForce_Notify",
+            "type": "String"
+        },
+        "connections_outlook_externalid": {
+            "defaultValue": "/subscriptions/4d3416c3-2677-453b-98da-b14884c01495/resourceGroups/NewTuesday/providers/Microsoft.Web/connections/outlook",
+            "type": "String"
+        },
+        "connections_azurevm_externalid": {
+            "defaultValue": "/subscriptions/4d3416c3-2677-453b-98da-b14884c01495/resourceGroups/NewTuesday/providers/Microsoft.Web/connections/azurevm",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_PBK_BruteForce_Notify_name')]",
+            "location": "uksouth",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "staticResults": {
+                        "Power_off_virtual_machine0": {
+                            "status": "Succeeded",
+                            "hasDelegate": false
+                        }
+                    },
+                    "triggers": {
+                        "Microsoft_Sentinel_incident": {
+                            "type": "ApiConnectionWebhook",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azuresentinel']['connectionId']"
+                                    }
+                                },
+                                "body": {
+                                    "callback_url": "@{listCallbackUrl()}"
+                                },
+                                "path": "/incident-creation"
+                            }
+                        }
+                    },
+                    "actions": {
+                        "Send_an_email_(V2)": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['outlook']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "To": "seunadetunji@outlook.com",
+                                    "Subject": "Brutal Force",
+                                    "Body": "<p class=\"editor-paragraph\">Brutal Force just occured</p>",
+                                    "Importance": "Normal"
+                                },
+                                "path": "/v2/Mail"
+                            }
+                        },
+                        "Power_off_virtual_machine": {
+                            "runAfter": {
+                                "Send_an_email_(V2)": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "limit": {
+                                "timeout": "PT5M"
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azurevm']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/subscriptions/@{encodeURIComponent('4d3416c3-2677-453b-98da-b14884c01495')}/resourcegroups/@{encodeURIComponent('NewTuesday')}/providers/Microsoft.Compute/virtualMachines/@{encodeURIComponent('NewTuesdayVM')}/powerOff",
+                                "queries": {
+                                    "api-version": "2019-12-01"
+                                }
+                            },
+                            "runtimeConfiguration": {
+                                "staticResult": {
+                                    "staticResultOptions": "Disabled",
+                                    "name": "Power_off_virtual_machine0"
+                                }
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "azuresentinel": {
+                                "id": "/subscriptions/4d3416c3-2677-453b-98da-b14884c01495/providers/Microsoft.Web/locations/uksouth/managedApis/azuresentinel",
+                                "connectionId": "[parameters('connections_azuresentinel_PBK_BruteForce_Notify_externalid')]",
+                                "connectionName": "[concat('azuresentinel-', parameters('workflows_PBK_BruteForce_Notify_name'))]",
+                                "connectionProperties": {
+                                    "authentication": {
+                                        "type": "ManagedServiceIdentity"
+                                    }
+                                }
+                            },
+                            "outlook": {
+                                "id": "/subscriptions/4d3416c3-2677-453b-98da-b14884c01495/providers/Microsoft.Web/locations/uksouth/managedApis/outlook",
+                                "connectionId": "[parameters('connections_outlook_externalid')]",
+                                "connectionName": "outlook"
+                            },
+                            "azurevm": {
+                                "id": "/subscriptions/4d3416c3-2677-453b-98da-b14884c01495/providers/Microsoft.Web/locations/uksouth/managedApis/azurevm",
+                                "connectionId": "[parameters('connections_azurevm_externalid')]",
+                                "connectionName": "azurevm"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
