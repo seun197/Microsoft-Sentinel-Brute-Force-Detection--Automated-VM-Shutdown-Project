@@ -1,5 +1,3 @@
-# 3) deploy/params.example.json
-
 ```json
 {
     "subscriptionId": "<SUB-ID>",
