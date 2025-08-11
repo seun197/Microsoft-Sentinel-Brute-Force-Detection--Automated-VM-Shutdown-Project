@@ -1,3 +1,8 @@
+
+---
+
+# 3) deploy/params.example.json
+
 ```json
 {
   "subscriptionId": "<SUB-ID>",
@@ -11,5 +16,3 @@
   "safetyTagValue": "true",
   "miRoleScope": "/subscriptions/<SUB-ID>/resourceGroups/<RG-NAME>"
 }
-
-```
