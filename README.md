@@ -1,0 +1,1 @@
+# Microsoft-Sentinel-Brute-Force-Detection--Automated-VM-Shutdown-Project
