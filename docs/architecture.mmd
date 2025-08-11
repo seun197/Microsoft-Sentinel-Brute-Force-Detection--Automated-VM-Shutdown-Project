@@ -1,1 +1,8 @@
-
+flowchart LR
+  A[Windows Host\nSecurityEvent 4625] --> B[Log Analytics]
+  B --> C[Microsoft Sentinel]
+  C -->|Analytic Rule| D[Incident]
+  D -->|Automation Rule| E[Logic App]
+  E -- No --> G[Notify Only]
+  F -- Yes --> H[VM powerOff]
+  G --> I[Notify outlook email]
