@@ -1,1 +1,18 @@
-
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_PBK_BruteForce_Notify_name": {
+            "value": null
+        },
+        "connections_azuresentinel_PBK_BruteForce_Notify_externalid": {
+            "value": null
+        },
+        "connections_outlook_externalid": {
+            "value": null
+        },
+        "connections_azurevm_externalid": {
+            "value": null
+        }
+    }
+}
